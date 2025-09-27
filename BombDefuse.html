@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bomb Defusal</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script defer src="bombgame.js"></script>
+<style>
+  body {
+    background: #111;
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .bomb {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+  }
+  .dynamite {
+    width: 160px;
+    height: 40px;
+    background: linear-gradient(#b00, #800);
+    border-radius: 20px;
+    border: 2px solid #400;
+    position: relative;
+  }
+  .timer-block {
+    width: 160px;
+    height: 60px;
+    background: #222;
+    border: 4px solid #555;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .timer {
+    font-size: clamp(1em, 4vw, 1.4em);
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+  svg.wires {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  path.wire {
+    fill: none;
+    stroke-width: 4;
+    cursor: pointer;
+    pointer-events: stroke;
+  }
+  .explosion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 999;
+  }
+  .blast {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #ff0 0%, #f00 60%, transparent 100%);
+    border-radius: 50%;
+    animation: blastExpand 0.6s ease-out forwards;
+  }
+  @keyframes blastExpand {
+    0% { transform: scale(0.5); opacity: 1; }
+    80% { transform: scale(6); opacity: 0.8; }
+    100% { transform: scale(8); opacity: 0; }
+  }
+  .flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    animation: flashAnim 0.3s ease-out forwards;
+    z-index: 1000;
+  }
+  @keyframes flashAnim {
+    0% { opacity: 0.8; }
+    100% { opacity: 0; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-8px, 4px); }
+    40% { transform: translate(6px, -6px); }
+    60% { transform: translate(-4px, 6px); }
+    80% { transform: translate(4px, -4px); }
+  }
+  .shake {
+    animation: shake 0.4s ease-in-out;
+  }
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: orange;
+    border-radius: 50%;
+    animation: particleFly 0.8s ease-out forwards;
+  }
+  @keyframes particleFly {
+    to {
+      transform: translate(var(--dx), var(--dy)) scale(0.5);
+      opacity: 0;
+    }
+  }
+  .controls {
+    margin-top: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  #message {
+    margin-top: 15px;
+    min-height: 1.5em;
+  }
+</style>
+</head>
+<body>
+
+<h1>Bomb Defusal</h1>
+<div class="bomb" id="bomb">
+  <div class="dynamite"></div>
+  <div class="timer-block">
+    <div class="timer" id="timer">--</div>
+  </div>
+  <div class="dynamite"></div>
+  <svg class="wires" id="wires" width="400" height="100"></svg>
+</div>
+
+<div class="controls">
+  <label for="customTime" style="color:#fff; margin-right:6px;">
+    Set Timer (sec):
+  </label>
+  <input type="number" id="customTime" min="1" max="300" style="width:70px; margin-right:10px;">
+  <button id="startBtn">Start</button>
+  <button id="hintBtn" disabled>Hint (-1s)</button>
+</div>
+<div id="message">Press Start to arm the bomb.</div>
+
+</body>
+</html>
